@@ -1,0 +1,14 @@
+language: php
+
+php:
+  - '7.4'
+
+install:
+  - composer install --prefer-dist --no-suggest
+
+script:
+  - composer ci
+
+cache:
+  directories:
+  - "$HOME/.composer/cache/files"
