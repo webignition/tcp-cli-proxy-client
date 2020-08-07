@@ -35,25 +35,31 @@
             "@cs",
             "@static-analysis",
             "@test"
+        ],
+        "server-fetch": [
+            "rm -f server.phar",
+            "curl -L https://github.com/webignition/tcp-cli-proxy-server/releases/download/0.4/server.phar --output server.phar",
+            "chmod +x server.phar"
+        ],
+        "client-test": [
+            "./vendor/bin/phpunit --colors=always tests/Integration/ClientTest.php"
         ]
     },
     "require": {
         "php": ">=7.4",
         "ext-sockets": "*",
         "clue/socket-raw": "^1.4",
-        "webignition/tcp-cli-proxy-models": ">=0.1,<1"
+        "webignition/tcp-cli-proxy-models": ">=0.2,<1"
     },
     "require-dev": {
         "mockery/mockery": "^1.4",
+        "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan": "^0.12.0",
         "phpstan/phpstan-mockery": "^0.12.7",
         "phpunit/phpunit": "^9.2",
         "squizlabs/php_codesniffer": "3.*",
         "symplify/easy-coding-standard": "^8.0"
     },
-    "bin": [
-        "bin/compiler"
-    ],
     "config": {
         "sort-packages": true
     }
