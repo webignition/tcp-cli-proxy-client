@@ -10,7 +10,7 @@ script:
   - composer ci
   - composer server-fetch
   - "./server &"
-  - composer server-test
+  - composer client-test
 
 cache:
   directories:
