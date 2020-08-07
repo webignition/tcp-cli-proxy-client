@@ -24,7 +24,7 @@ class Client
     ) {
         $this->host = $host;
         $this->port = $port;
-        $this->connectionFactory  = $connectionFactory ?? new ConnectionFactory(new Factory());
+        $this->connectionFactory = $connectionFactory ?? new ConnectionFactory(new Factory());
         $this->readLength = $readLength;
     }
 

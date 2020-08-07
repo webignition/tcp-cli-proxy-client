@@ -8,6 +8,9 @@ install:
 
 script:
   - composer ci
+  - composer server-fetch
+  - "./server &"
+  - composer server-test
 
 cache:
   directories:

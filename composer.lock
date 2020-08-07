@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9bfbd364275dfa809cfc1840fb42149e",
+    "content-hash": "0d4df9ee9333b700620d4c3689062fe1",
     "packages": [
         {
             "name": "clue/socket-raw",
@@ -63,16 +63,16 @@
         },
         {
             "name": "webignition/tcp-cli-proxy-models",
-            "version": "0.1",
+            "version": "0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/tcp-cli-proxy-models.git",
-                "reference": "f589cd8d39514b72f94dd186200f1add79eca73b"
+                "reference": "06da0bad547ffef8b8ddf8997621a39a30ce56e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/tcp-cli-proxy-models/zipball/f589cd8d39514b72f94dd186200f1add79eca73b",
-                "reference": "f589cd8d39514b72f94dd186200f1add79eca73b",
+                "url": "https://api.github.com/repos/webignition/tcp-cli-proxy-models/zipball/06da0bad547ffef8b8ddf8997621a39a30ce56e8",
+                "reference": "06da0bad547ffef8b8ddf8997621a39a30ce56e8",
                 "shasum": ""
             },
             "require": {
@@ -84,9 +84,6 @@
                 "squizlabs/php_codesniffer": "3.*",
                 "symplify/easy-coding-standard": "^8.0"
             },
-            "bin": [
-                "bin/compiler"
-            ],
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -104,7 +101,7 @@
                 }
             ],
             "homepage": "https://github.com/webignition/tcp-cli-proxy-models",
-            "time": "2020-08-06T14:14:25+00:00"
+            "time": "2020-08-07T09:41:59+00:00"
         }
     ],
     "packages-dev": [
@@ -1490,6 +1487,51 @@
                 "stub"
             ],
             "time": "2020-07-08T12:44:21+00:00"
+        },
+        {
+            "name": "phpstan/extension-installer",
+            "version": "1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpstan/extension-installer.git",
+                "reference": "2e041def501d661b806f50000c8a4dccbd4907b4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpstan/extension-installer/zipball/2e041def501d661b806f50000c8a4dccbd4907b4",
+                "reference": "2e041def501d661b806f50000c8a4dccbd4907b4",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.1 || ^2.0",
+                "php": "^7.1",
+                "phpstan/phpstan": ">=0.11.6"
+            },
+            "require-dev": {
+                "composer/composer": "^1.8",
+                "consistence/coding-standard": "^3.8",
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
+                "ergebnis/composer-normalize": "^2.0.2",
+                "jakub-onderka/php-parallel-lint": "^1.0",
+                "phing/phing": "^2.16",
+                "phpstan/phpstan-strict-rules": "^0.11",
+                "slevomat/coding-standard": "^5.0.4"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "PHPStan\\ExtensionInstaller\\Plugin"
+            },
+            "autoload": {
+                "psr-4": {
+                    "PHPStan\\ExtensionInstaller\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Composer plugin for automatic installation of PHPStan extensions",
+            "time": "2020-03-31T16:00:42+00:00"
         },
         {
             "name": "phpstan/phpstan",

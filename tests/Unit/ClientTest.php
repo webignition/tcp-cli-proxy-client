@@ -99,7 +99,7 @@ class ClientTest extends TestCase
             ->with($request, MSG_EOF)
             ->andReturn(strlen($request));
 
-        $responseChunks = str_split($rawResponse, $readLength);
+        $responseChunks = (array) str_split($rawResponse, $readLength);
 
         $readCount = 0;
         $readLimit = count($responseChunks);
@@ -121,6 +121,11 @@ class ClientTest extends TestCase
         return $socket;
     }
 
+    /**
+     * @param string[] $lines
+     *
+     * @return string
+     */
     private function createRawResponse(array $lines): string
     {
         return implode("\n", $lines);
