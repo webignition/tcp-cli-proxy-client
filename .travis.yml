@@ -9,7 +9,7 @@ install:
 script:
   - composer ci
   - composer server-fetch
-  - "./server &"
+  - "./server.phar &"
   - composer client-test
 
 cache:
