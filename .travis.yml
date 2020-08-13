@@ -8,9 +8,9 @@ install:
 
 script:
   - composer ci
-  - composer server-fetch
-  - "./server.phar &"
-  - composer client-test
+#  - composer server-fetch
+#  - "./server.phar &"
+#  - composer client-test
 
 cache:
   directories:
