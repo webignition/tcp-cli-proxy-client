@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace webignition\TcpCliProxyClient;
 
+use webignition\TcpCliProxyClient\Exception\ClientCreationException;
+use webignition\TcpCliProxyClient\Services\SocketFactory;
+
 class StreamingClient
 {
-    private string $host;
-    private int $port;
-
     /**
      * @var resource
      */
@@ -22,21 +22,46 @@ class StreamingClient
     /**
      * @param string $host
      * @param int $port
+     * @param SocketFactory $socketFactory
      * @param resource $out
+     *
+     * @throws ClientCreationException
      */
-    public function __construct(string $host, int $port, $out)
+    public function __construct(string $host, int $port, SocketFactory $socketFactory, $out)
     {
-        $this->host = $host;
-        $this->port = $port;
         $this->out = $out;
+        $this->socket = $socketFactory->create($host, $port);
+    }
 
-        $socket = stream_socket_client('tcp://' . $host . ':' . $port, $errno, $errstr, 30);
+    /**
+     * @param string $host
+     * @param int $port
+     *
+     * @return self
+     *
+     * @throws ClientCreationException
+     */
+    public static function createClient(string $host, int $port): self
+    {
+        return new StreamingClient(
+            $host,
+            $port,
+            new SocketFactory(),
+            STDOUT
+        );
+    }
 
-        if (false === $socket) {
-            throw new \RuntimeException('client connection failed');
-        }
+    /**
+     * @param resource $out
+     *
+     * @return self
+     */
+    public function withOut($out): self
+    {
+        $new = clone $this;
+        $new->out = $out;
 
-        $this->socket = $socket;
+        return $new;
     }
 
     public function request(string $request, ?callable $filter = null): void
