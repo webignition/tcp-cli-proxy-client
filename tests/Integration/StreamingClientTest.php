@@ -16,6 +16,8 @@ class StreamingClientTest extends TestCase
      */
     private $out;
 
+    private StreamingClient $client;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -30,25 +32,25 @@ class StreamingClientTest extends TestCase
         }
 
         self::assertStringEqualsFile($this->outPath, '');
+
+        $this->client = StreamingClient::createClient('localhost', 8000);
+        $this->client = $this->client->withOut($this->out);
     }
 
     public function testRequest()
     {
-        $client = new StreamingClient('localhost', 8000, $this->out);
-        $client->request('ls ' . __FILE__);
+        $this->client->request('ls ' . __FILE__);
 
         self::assertStringEqualsFile($this->outPath, __FILE__ . "\n\n0");
     }
 
     public function testResponseIsWrittenAsReceived()
     {
-        $client = new StreamingClient('localhost', 8000, $this->out);
-
         $fixturePath = __DIR__ . '/fixture.sh';
         $now = microtime(true);
         $writeIntervals = [];
 
-        $client->request($fixturePath, function (string $buffer) use (&$writeIntervals, &$now) {
+        $this->client->request($fixturePath, function (string $buffer) use (&$writeIntervals, &$now) {
             $writeIntervals[] = microtime(true) - $now;
             $now = microtime(true);
 
