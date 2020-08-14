@@ -5,16 +5,14 @@ declare(strict_types=1);
 namespace webignition\TcpCliProxyClient\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Output\StreamOutput;
 use webignition\TcpCliProxyClient\Client;
 
 class ClientTest extends TestCase
 {
     private string $outPath;
-
-    /**
-     * @var resource
-     */
-    private $out;
+    private OutputInterface $output;
 
     private Client $client;
 
@@ -23,10 +21,10 @@ class ClientTest extends TestCase
         parent::setUp();
 
         $this->outPath = __DIR__ . '/out';
-        $out = fopen($this->outPath, 'w+');
+        $outFile = fopen($this->outPath, 'w+');
 
-        if (is_resource($out)) {
-            $this->out = $out;
+        if (is_resource($outFile)) {
+            $this->output = new StreamOutput($outFile);
         } else {
             $this->fail('Failed to create output file');
         }
@@ -34,7 +32,7 @@ class ClientTest extends TestCase
         self::assertStringEqualsFile($this->outPath, '');
 
         $this->client = new Client('localhost', 8000);
-        $this->client = $this->client->withOut($this->out);
+        $this->client = $this->client->withOutput($this->output);
     }
 
     public function testRequest()
