@@ -33,7 +33,7 @@ class ClientTest extends TestCase
 
         self::assertStringEqualsFile($this->outPath, '');
 
-        $this->client = Client::createClient('localhost', 8000);
+        $this->client = new Client('localhost', 8000);
         $this->client = $this->client->withOut($this->out);
     }
 
