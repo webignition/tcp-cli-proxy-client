@@ -9,29 +9,40 @@ use webignition\TcpCliProxyClient\StreamingClient;
 
 class StreamingClientTest extends TestCase
 {
+    private string $outPath;
+
+    /**
+     * @var resource
+     */
+    private $out;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->outPath = __DIR__ . '/out';
+        $out = fopen($this->outPath, 'w+');
+
+        if (is_resource($out)) {
+            $this->out = $out;
+        } else {
+            $this->fail('Failed to create output file');
+        }
+
+        self::assertStringEqualsFile($this->outPath, '');
+    }
+
     public function testRequest()
     {
-        $outPath = __DIR__ . '/out';
-
-        $out = fopen($outPath, 'w+');
-        self::assertStringEqualsFile($outPath, '');
-
-        $client = new StreamingClient('localhost', 8000, $out);
+        $client = new StreamingClient('localhost', 8000, $this->out);
         $client->request('ls ' . __FILE__);
 
-        self::assertStringEqualsFile($outPath, __FILE__ . "\n\n0");
-
-        unlink($outPath);
+        self::assertStringEqualsFile($this->outPath, __FILE__ . "\n\n0");
     }
 
     public function testResponseIsWrittenAsReceived()
     {
-        $outPath = __DIR__ . '/out';
-
-        $out = fopen($outPath, 'w+');
-        self::assertStringEqualsFile($outPath, '');
-
-        $client = new StreamingClient('localhost', 8000, $out);
+        $client = new StreamingClient('localhost', 8000, $this->out);
 
         $fixturePath = __DIR__ . '/fixture.sh';
         $now = microtime(true);
@@ -50,7 +61,13 @@ class StreamingClientTest extends TestCase
             self::assertGreaterThanOrEqual(0.1, $interval);
             self::assertLessThan(0.11, $interval);
         }
+    }
 
-        unlink($outPath);
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        self::assertFileExists($this->outPath);
+        unlink($this->outPath);
     }
 }
