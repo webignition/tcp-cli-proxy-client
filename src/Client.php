@@ -10,60 +10,25 @@ use webignition\TcpCliProxyClient\Services\SocketFactory;
 
 class Client
 {
-    /**
-     * @var resource
-     */
-    private $socket;
+    private string $host;
+    private int $port;
+
+    private ErrorHandler $errorHandler;
+    private SocketFactory $socketFactory;
 
     /**
      * @var resource
      */
     private $out;
 
-    private ErrorHandler $errorHandler;
-
-    /**
-     * @param string $host
-     * @param int $port
-     * @param SocketFactory $socketFactory
-     * @param ErrorHandler $errorHandler
-     * @param resource $out
-     *
-     * @throws ClientCreationException
-     * @throws \ErrorException
-     */
-    public function __construct(
-        string $host,
-        int $port,
-        SocketFactory $socketFactory,
-        ErrorHandler $errorHandler,
-        $out
-    ) {
-        $this->errorHandler = $errorHandler;
-        $this->out = $out;
-        $this->socket = $socketFactory->create($host, $port);
-    }
-
-    /**
-     * @param string $host
-     * @param int $port
-     *
-     * @return self
-     *
-     * @throws ClientCreationException
-     * @throws \ErrorException
-     */
-    public static function createClient(string $host, int $port): self
+    public function __construct(string $host, int $port)
     {
-        $errorHandler = new ErrorHandler();
+        $this->host = $host;
+        $this->port = $port;
 
-        return new Client(
-            $host,
-            $port,
-            new SocketFactory($errorHandler),
-            $errorHandler,
-            STDOUT
-        );
+        $this->errorHandler = new ErrorHandler();
+        $this->socketFactory = new SocketFactory($this->errorHandler);
+        $this->out = STDOUT;
     }
 
     /**
@@ -84,24 +49,41 @@ class Client
      * @param callable|null $filter
      *
      * @throws \ErrorException
+     * @throws ClientCreationException
      */
     public function request(string $request, ?callable $filter = null): void
     {
+        $socket = $this->createSocket($this->host, $this->port);
+
         $filter = $filter ?? function (string $buffer) {
             return $buffer;
         };
 
         $this->errorHandler->start();
-        fwrite($this->socket, $request . "\n");
-        while (!feof($this->socket)) {
-            $buffer = (string) fgets($this->socket);
+        fwrite($socket, $request . "\n");
+        while (!feof($socket)) {
+            $buffer = (string) fgets($socket);
 
             (function (string $buffer, callable $foo) {
                 $buffer = $foo($buffer);
                 fwrite($this->out, $buffer);
             })($buffer, $filter);
         }
-        fclose($this->socket);
+        fclose($socket);
         $this->errorHandler->stop();
+    }
+
+    /**
+     * @param string $host
+     * @param int $port
+     *
+     * @return resource
+     *
+     * @throws ClientCreationException
+     * @throws \ErrorException
+     */
+    private function createSocket(string $host, int $port)
+    {
+        return $this->socketFactory->create($host, $port);
     }
 }
