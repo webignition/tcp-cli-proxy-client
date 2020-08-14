@@ -46,7 +46,8 @@
         ]
     },
     "require": {
-        "php": ">=7.4"
+        "php": ">=7.4",
+        "symfony/console": "^5.1"
     },
     "require-dev": {
         "mockery/mockery": "^1.4",

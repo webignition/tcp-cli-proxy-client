@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace webignition\TcpCliProxyClient;
 
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Output\StreamOutput;
 use webignition\TcpCliProxyClient\Exception\ClientCreationException;
 use webignition\TcpCliProxyClient\Services\ErrorHandler;
 use webignition\TcpCliProxyClient\Services\SocketFactory;
@@ -15,11 +17,7 @@ class Client
 
     private ErrorHandler $errorHandler;
     private SocketFactory $socketFactory;
-
-    /**
-     * @var resource
-     */
-    private $out;
+    private OutputInterface $output;
 
     public function __construct(string $host, int $port)
     {
@@ -28,18 +26,13 @@ class Client
 
         $this->errorHandler = new ErrorHandler();
         $this->socketFactory = new SocketFactory($this->errorHandler);
-        $this->out = STDOUT;
+        $this->output = new StreamOutput(STDOUT);
     }
 
-    /**
-     * @param resource $out
-     *
-     * @return self
-     */
-    public function withOut($out): self
+    public function withOutput(OutputInterface $output): self
     {
         $new = clone $this;
-        $new->out = $out;
+        $new->output = $output;
 
         return $new;
     }
@@ -66,7 +59,7 @@ class Client
 
             (function (string $buffer, callable $foo) {
                 $buffer = $foo($buffer);
-                fwrite($this->out, $buffer);
+                $this->output->write($buffer);
             })($buffer, $filter);
         }
         fclose($socket);
