@@ -38,7 +38,7 @@
         ],
         "server-fetch": [
             "rm -f server.phar",
-            "curl -L https://github.com/webignition/tcp-cli-proxy-server/releases/download/0.4/server.phar --output server.phar",
+            "curl -L https://github.com/webignition/tcp-cli-proxy-server/releases/download/0.5/server.phar --output server.phar",
             "chmod +x server.phar"
         ],
         "client-test": [
@@ -46,13 +46,12 @@
         ]
     },
     "require": {
-        "php": ">=7.4",
-        "ext-sockets": "*",
-        "clue/socket-raw": "^1.4",
-        "webignition/tcp-cli-proxy-models": ">=0.2,<1"
+        "php": ">=7.4"
     },
     "require-dev": {
         "mockery/mockery": "^1.4",
+        "php-mock/php-mock": "^2.2",
+        "php-mock/php-mock-mockery": "^1.3",
         "phpstan/extension-installer": "^1.0",
         "phpstan/phpstan": "^0.12.0",
         "phpstan/phpstan-mockery": "^0.12.7",

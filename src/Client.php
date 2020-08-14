@@ -4,40 +4,104 @@ declare(strict_types=1);
 
 namespace webignition\TcpCliProxyClient;
 
-use Socket\Raw\Factory;
-use webignition\TcpCliProxyModels\Output;
+use webignition\TcpCliProxyClient\Exception\ClientCreationException;
+use webignition\TcpCliProxyClient\Services\ErrorHandler;
+use webignition\TcpCliProxyClient\Services\SocketFactory;
 
 class Client
 {
-    private const READ_LENGTH = 2048;
+    /**
+     * @var resource
+     */
+    private $socket;
 
-    private string $host;
-    private int $port;
-    private ConnectionFactory $connectionFactory;
-    private int $readLength;
+    /**
+     * @var resource
+     */
+    private $out;
 
+    private ErrorHandler $errorHandler;
+
+    /**
+     * @param string $host
+     * @param int $port
+     * @param SocketFactory $socketFactory
+     * @param ErrorHandler $errorHandler
+     * @param resource $out
+     *
+     * @throws ClientCreationException
+     * @throws \ErrorException
+     */
     public function __construct(
         string $host,
         int $port,
-        ?ConnectionFactory $connectionFactory = null,
-        int $readLength = self::READ_LENGTH
+        SocketFactory $socketFactory,
+        ErrorHandler $errorHandler,
+        $out
     ) {
-        $this->host = $host;
-        $this->port = $port;
-        $this->connectionFactory = $connectionFactory ?? new ConnectionFactory(new Factory());
-        $this->readLength = $readLength;
+        $this->errorHandler = $errorHandler;
+        $this->out = $out;
+        $this->socket = $socketFactory->create($host, $port);
     }
 
-    public function request(string $request): Output
+    /**
+     * @param string $host
+     * @param int $port
+     *
+     * @return self
+     *
+     * @throws ClientCreationException
+     * @throws \ErrorException
+     */
+    public static function createClient(string $host, int $port): self
     {
-        $socket = $this->connectionFactory->create($this->host, $this->port);
-        $socket->send($request, MSG_EOF);
+        $errorHandler = new ErrorHandler();
 
-        $response = '';
-        while ('' !== ($partialResponse = $socket->read($this->readLength))) {
-            $response .= $partialResponse;
+        return new Client(
+            $host,
+            $port,
+            new SocketFactory($errorHandler),
+            $errorHandler,
+            STDOUT
+        );
+    }
+
+    /**
+     * @param resource $out
+     *
+     * @return self
+     */
+    public function withOut($out): self
+    {
+        $new = clone $this;
+        $new->out = $out;
+
+        return $new;
+    }
+
+    /**
+     * @param string $request
+     * @param callable|null $filter
+     *
+     * @throws \ErrorException
+     */
+    public function request(string $request, ?callable $filter = null): void
+    {
+        $filter = $filter ?? function (string $buffer) {
+            return $buffer;
+        };
+
+        $this->errorHandler->start();
+        fwrite($this->socket, $request . "\n");
+        while (!feof($this->socket)) {
+            $buffer = (string) fgets($this->socket);
+
+            (function (string $buffer, callable $foo) {
+                $buffer = $foo($buffer);
+                fwrite($this->out, $buffer);
+            })($buffer, $filter);
         }
-
-        return Output::fromString($response);
+        fclose($this->socket);
+        $this->errorHandler->stop();
     }
 }
