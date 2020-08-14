@@ -46,10 +46,7 @@
         ]
     },
     "require": {
-        "php": ">=7.4",
-        "ext-sockets": "*",
-        "clue/socket-raw": "^1.4",
-        "webignition/tcp-cli-proxy-models": ">=0.2,<1"
+        "php": ">=7.4"
     },
     "require-dev": {
         "mockery/mockery": "^1.4",
