@@ -8,7 +8,7 @@ use webignition\TcpCliProxyClient\Exception\ClientCreationException;
 use webignition\TcpCliProxyClient\Services\ErrorHandler;
 use webignition\TcpCliProxyClient\Services\SocketFactory;
 
-class StreamingClient
+class Client
 {
     /**
      * @var resource
@@ -57,7 +57,7 @@ class StreamingClient
     {
         $errorHandler = new ErrorHandler();
 
-        return new StreamingClient(
+        return new Client(
             $host,
             $port,
             new SocketFactory($errorHandler),

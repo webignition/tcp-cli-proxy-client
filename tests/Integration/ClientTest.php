@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace webignition\TcpCliProxyClient\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
-use webignition\TcpCliProxyClient\StreamingClient;
+use webignition\TcpCliProxyClient\Client;
 
-class StreamingClientTest extends TestCase
+class ClientTest extends TestCase
 {
     private string $outPath;
 
@@ -16,7 +16,7 @@ class StreamingClientTest extends TestCase
      */
     private $out;
 
-    private StreamingClient $client;
+    private Client $client;
 
     protected function setUp(): void
     {
@@ -33,7 +33,7 @@ class StreamingClientTest extends TestCase
 
         self::assertStringEqualsFile($this->outPath, '');
 
-        $this->client = StreamingClient::createClient('localhost', 8000);
+        $this->client = Client::createClient('localhost', 8000);
         $this->client = $this->client->withOut($this->out);
     }
 
