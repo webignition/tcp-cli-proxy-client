@@ -42,7 +42,7 @@
             "chmod +x server.phar"
         ],
         "client-test": [
-            "./vendor/bin/phpunit --colors=always tests/Integration/StreamingClientTest.php"
+            "./vendor/bin/phpunit --colors=always tests/Integration/ClientTest.php"
         ]
     },
     "require": {
