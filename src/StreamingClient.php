@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace webignition\TcpCliProxyClient;
 
 use webignition\TcpCliProxyClient\Exception\ClientCreationException;
+use webignition\TcpCliProxyClient\Services\ErrorHandler;
 use webignition\TcpCliProxyClient\Services\SocketFactory;
 
 class StreamingClient
@@ -19,16 +20,26 @@ class StreamingClient
      */
     private $out;
 
+    private ErrorHandler $errorHandler;
+
     /**
      * @param string $host
      * @param int $port
      * @param SocketFactory $socketFactory
+     * @param ErrorHandler $errorHandler
      * @param resource $out
      *
      * @throws ClientCreationException
+     * @throws \ErrorException
      */
-    public function __construct(string $host, int $port, SocketFactory $socketFactory, $out)
-    {
+    public function __construct(
+        string $host,
+        int $port,
+        SocketFactory $socketFactory,
+        ErrorHandler $errorHandler,
+        $out
+    ) {
+        $this->errorHandler = $errorHandler;
         $this->out = $out;
         $this->socket = $socketFactory->create($host, $port);
     }
@@ -40,13 +51,17 @@ class StreamingClient
      * @return self
      *
      * @throws ClientCreationException
+     * @throws \ErrorException
      */
     public static function createClient(string $host, int $port): self
     {
+        $errorHandler = new ErrorHandler();
+
         return new StreamingClient(
             $host,
             $port,
-            new SocketFactory(),
+            new SocketFactory($errorHandler),
+            $errorHandler,
             STDOUT
         );
     }
@@ -64,12 +79,19 @@ class StreamingClient
         return $new;
     }
 
+    /**
+     * @param string $request
+     * @param callable|null $filter
+     *
+     * @throws \ErrorException
+     */
     public function request(string $request, ?callable $filter = null): void
     {
         $filter = $filter ?? function (string $buffer) {
             return $buffer;
         };
 
+        $this->errorHandler->start();
         fwrite($this->socket, $request . "\n");
         while (!feof($this->socket)) {
             $buffer = (string) fgets($this->socket);
@@ -80,5 +102,6 @@ class StreamingClient
             })($buffer, $filter);
         }
         fclose($this->socket);
+        $this->errorHandler->stop();
     }
 }

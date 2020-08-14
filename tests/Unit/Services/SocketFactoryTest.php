@@ -7,6 +7,7 @@ namespace webignition\TcpCliProxyClient\Tests\Unit\Services;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use phpmock\mockery\PHPMockery;
 use PHPUnit\Framework\TestCase;
+use webignition\TcpCliProxyClient\Services\ErrorHandler;
 use webignition\TcpCliProxyClient\Services\SocketFactory;
 
 class SocketFactoryTest extends TestCase
@@ -20,6 +21,15 @@ class SocketFactoryTest extends TestCase
 
         /** @var resource $socket */
         $socket = \Mockery::mock();
+
+        $errorHandler = \Mockery::mock(ErrorHandler::class);
+        $errorHandler
+            ->shouldReceive('start')
+            ->once();
+
+        $errorHandler
+            ->shouldReceive('stop')
+            ->once();
 
         PHPMockery::mock('webignition\TcpCliProxyClient\Services', 'is_resource')
             ->with($socket)
@@ -35,7 +45,7 @@ class SocketFactoryTest extends TestCase
             })
             ->andReturn($socket);
 
-        $factory = new SocketFactory();
+        $factory = new SocketFactory($errorHandler);
 
         $createdSocket = $factory->create($host, $port);
         self::assertSame($socket, $createdSocket);
