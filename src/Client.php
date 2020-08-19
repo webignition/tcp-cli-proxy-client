@@ -9,6 +9,7 @@ use Symfony\Component\Console\Output\StreamOutput;
 use webignition\ErrorHandler\ErrorHandler;
 use webignition\TcpCliProxyClient\Exception\ClientCreationException;
 use webignition\TcpCliProxyClient\Exception\SocketErrorException;
+use webignition\TcpCliProxyClient\Services\ConnectionStringFactory;
 use webignition\TcpCliProxyClient\Services\SocketFactory;
 
 class Client
@@ -31,7 +32,7 @@ class Client
     public static function createFromHostAndPort(string $host, int $port): self
     {
         return new Client(
-            (string) sprintf('tcp://%s:%d', $host, $port)
+            (new ConnectionStringFactory())->createFromHostAndPort($host, $port)
         );
     }
 
