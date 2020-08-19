@@ -18,26 +18,29 @@ class SocketFactory
     }
 
     /**
-     * @param string $host
-     * @param int $port
+     * @param string $connectionString
      *
      * @return resource
      *
      * @throws ClientCreationException
      * @throws \ErrorException
      */
-    public function create(string $host, int $port)
+    public function create(string $connectionString)
     {
         $this->errorHandler->start();
         $socket = stream_socket_client(
-            sprintf('tcp://%s:%d', $host, $port),
+            $connectionString,
             $this->errorNumber,
             $this->errorMessage
         );
         $this->errorHandler->stop();
 
         if (!is_resource($socket)) {
-            throw new ClientCreationException((string) $this->errorMessage, (int) $this->errorNumber);
+            throw new ClientCreationException(
+                $connectionString,
+                (string) $this->errorMessage,
+                (int) $this->errorNumber
+            );
         }
 
         return $socket;

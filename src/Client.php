@@ -12,21 +12,26 @@ use webignition\TcpCliProxyClient\Services\SocketFactory;
 
 class Client
 {
-    private string $host;
-    private int $port;
+    private string $connectionString;
 
     private ErrorHandler $errorHandler;
     private SocketFactory $socketFactory;
     private OutputInterface $output;
 
-    public function __construct(string $host, int $port)
+    public function __construct(string $connectionString)
     {
-        $this->host = $host;
-        $this->port = $port;
+        $this->connectionString = $connectionString;
 
         $this->errorHandler = new ErrorHandler();
         $this->socketFactory = new SocketFactory($this->errorHandler);
         $this->output = new StreamOutput(STDOUT);
+    }
+
+    public static function createFromHostAndPort(string $host, int $port): self
+    {
+        return new Client(
+            (string) sprintf('tcp://%s:%d', $host, $port)
+        );
     }
 
     public function withOutput(OutputInterface $output): self
@@ -46,7 +51,7 @@ class Client
      */
     public function request(string $request, ?callable $filter = null): void
     {
-        $socket = $this->createSocket($this->host, $this->port);
+        $socket = $this->socketFactory->create($this->connectionString);
 
         $filter = $filter ?? function (string $buffer) {
             return $buffer;
@@ -64,19 +69,5 @@ class Client
         }
         fclose($socket);
         $this->errorHandler->stop();
-    }
-
-    /**
-     * @param string $host
-     * @param int $port
-     *
-     * @return resource
-     *
-     * @throws ClientCreationException
-     * @throws \ErrorException
-     */
-    private function createSocket(string $host, int $port)
-    {
-        return $this->socketFactory->create($host, $port);
     }
 }
