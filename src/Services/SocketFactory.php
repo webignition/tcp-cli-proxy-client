@@ -6,6 +6,7 @@ namespace webignition\TcpCliProxyClient\Services;
 
 use webignition\ErrorHandler\ErrorHandler;
 use webignition\TcpCliProxyClient\Exception\ClientCreationException;
+use webignition\TcpCliProxyClient\Exception\SocketErrorException;
 
 class SocketFactory
 {
@@ -24,7 +25,7 @@ class SocketFactory
      * @return resource
      *
      * @throws ClientCreationException
-     * @throws \ErrorException
+     * @throws SocketErrorException
      */
     public function create(string $connectionString)
     {
@@ -34,7 +35,12 @@ class SocketFactory
             $this->errorNumber,
             $this->errorMessage
         );
-        $this->errorHandler->stop();
+
+        try {
+            $this->errorHandler->stop();
+        } catch (\ErrorException $errorException) {
+            throw new SocketErrorException($errorException);
+        }
 
         if (!is_resource($socket)) {
             throw new ClientCreationException(

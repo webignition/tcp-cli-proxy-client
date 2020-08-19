@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 use webignition\ErrorHandler\ErrorHandler;
 use webignition\ObjectReflector\ObjectReflector;
 use webignition\TcpCliProxyClient\Exception\ClientCreationException;
+use webignition\TcpCliProxyClient\Exception\SocketErrorException;
 use webignition\TcpCliProxyClient\Services\SocketFactory;
 
 class SocketFactoryTest extends TestCase
@@ -91,16 +92,35 @@ class SocketFactoryTest extends TestCase
         }
     }
 
+    public function testCreateEncapsulatesErrorExceptionInSocketErrorException()
+    {
+        $errorException = new \ErrorException('error exception message');
+
+        $errorHandler = \Mockery::mock(ErrorHandler::class);
+        $errorHandler
+            ->shouldReceive('start');
+
+        $errorHandler
+            ->shouldReceive('stop')
+            ->andThrow($errorException);
+
+        PHPMockery::mock('webignition\TcpCliProxyClient\Services', 'stream_socket_client');
+
+        $factory = new SocketFactory($errorHandler);
+
+        $this->expectExceptionObject(new SocketErrorException($errorException));
+
+        $factory->create($this->connectionString);
+    }
+
     private function createErrorHandler(): ErrorHandler
     {
         $errorHandler = \Mockery::mock(ErrorHandler::class);
         $errorHandler
-            ->shouldReceive('start')
-            ->once();
+            ->shouldReceive('start');
 
         $errorHandler
-            ->shouldReceive('stop')
-            ->once();
+            ->shouldReceive('stop');
 
         return $errorHandler;
     }
