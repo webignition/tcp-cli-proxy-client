@@ -58,7 +58,8 @@
         "phpstan/phpstan-mockery": "^0.12.7",
         "phpunit/phpunit": "^9.2",
         "squizlabs/php_codesniffer": "3.*",
-        "symplify/easy-coding-standard": "^8.0"
+        "symplify/easy-coding-standard": "^8.0",
+        "webignition/object-reflector": "^0.2.0"
     },
     "config": {
         "sort-packages": true
