@@ -8,6 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
 use webignition\ErrorHandler\ErrorHandler;
 use webignition\TcpCliProxyClient\Exception\ClientCreationException;
+use webignition\TcpCliProxyClient\Exception\SocketErrorException;
 use webignition\TcpCliProxyClient\Services\SocketFactory;
 
 class Client
@@ -46,8 +47,8 @@ class Client
      * @param string $request
      * @param callable|null $filter
      *
-     * @throws \ErrorException
      * @throws ClientCreationException
+     * @throws SocketErrorException
      */
     public function request(string $request, ?callable $filter = null): void
     {
@@ -68,6 +69,11 @@ class Client
             })($buffer, $filter);
         }
         fclose($socket);
-        $this->errorHandler->stop();
+
+        try {
+            $this->errorHandler->stop();
+        } catch (\ErrorException $errorException) {
+            throw new SocketErrorException($errorException);
+        }
     }
 }
