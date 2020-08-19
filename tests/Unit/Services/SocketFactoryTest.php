@@ -11,6 +11,7 @@ use webignition\ErrorHandler\ErrorHandler;
 use webignition\ObjectReflector\ObjectReflector;
 use webignition\TcpCliProxyClient\Exception\ClientCreationException;
 use webignition\TcpCliProxyClient\Exception\SocketErrorException;
+use webignition\TcpCliProxyClient\Services\ConnectionStringFactory;
 use webignition\TcpCliProxyClient\Services\SocketFactory;
 
 class SocketFactoryTest extends TestCase
@@ -26,7 +27,7 @@ class SocketFactoryTest extends TestCase
 
         $host = 'localhost';
         $port = 8000;
-        $this->connectionString = (string) sprintf('tcp://%s:%d', $host, $port);
+        $this->connectionString = (new ConnectionStringFactory())->createFromHostAndPort($host, $port);
 
         $this->factory = new SocketFactory($this->createErrorHandler());
     }
