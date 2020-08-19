@@ -6,8 +6,8 @@ namespace webignition\TcpCliProxyClient;
 
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
+use webignition\ErrorHandler\ErrorHandler;
 use webignition\TcpCliProxyClient\Exception\ClientCreationException;
-use webignition\TcpCliProxyClient\Services\ErrorHandler;
 use webignition\TcpCliProxyClient\Services\SocketFactory;
 
 class Client

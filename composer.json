@@ -47,7 +47,8 @@
     },
     "require": {
         "php": ">=7.4",
-        "symfony/console": "^5.1"
+        "symfony/console": "^5.1",
+        "webignition/error-handler": "^0.1.0"
     },
     "require-dev": {
         "mockery/mockery": "^1.4",
