@@ -63,6 +63,15 @@ class ClientTest extends TestCase
         }
     }
 
+    public function testRequestFilterReturningNullWritesNoOutput()
+    {
+        $this->client->request('ls ' . __FILE__, function () {
+            return null;
+        });
+
+        self::assertStringEqualsFile($this->outPath, '');
+    }
+
     protected function tearDown(): void
     {
         parent::tearDown();

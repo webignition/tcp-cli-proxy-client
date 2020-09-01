@@ -64,9 +64,12 @@ class Client
         while (!feof($socket)) {
             $buffer = (string) fgets($socket);
 
-            (function (string $buffer, callable $foo) {
-                $buffer = $foo($buffer);
-                $this->output->write($buffer);
+            (function (string $buffer, callable $filter) {
+                $buffer = $filter($buffer);
+
+                if (is_string($buffer)) {
+                    $this->output->write($buffer);
+                }
             })($buffer, $filter);
         }
         fclose($socket);
