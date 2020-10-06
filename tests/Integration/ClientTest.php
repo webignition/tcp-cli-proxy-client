@@ -7,30 +7,32 @@ namespace webignition\TcpCliProxyClient\Tests\Integration;
 use PHPUnit\Framework\TestCase;
 use webignition\TcpCliProxyClient\Client;
 use webignition\TcpCliProxyClient\Handler;
+use webignition\TcpCliProxyClient\HandlerFactory;
 
 class ClientTest extends TestCase
 {
     private Client $client;
+    private HandlerFactory $handlerFactory;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->client = Client::createFromHostAndPort('localhost', 8000);
+        $this->handlerFactory = new HandlerFactory();
     }
 
     public function testRequest()
     {
         $output = '';
+        $exitCode = null;
 
-        $handler = new Handler();
-        $handler = $handler->addCallback(function (string $buffer) use (&$output) {
-            $output .= $buffer;
-        });
+        $handler = $this->handlerFactory->createWithScalarOutput($output, $exitCode);
 
         $this->client->request('ls ' . __FILE__, $handler);
 
-        self::assertSame(__FILE__ . "\n\n0", $output);
+        self::assertSame(0, $exitCode);
+        self::assertSame(__FILE__ . "\n\n", $output);
     }
 
     public function testResponseIsWrittenAsReceived()
