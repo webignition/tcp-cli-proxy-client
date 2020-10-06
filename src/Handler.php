@@ -16,13 +16,13 @@ class Handler
      */
     private array $callbacks = [];
 
-    public function handle(): void
+    public function handle(string $request): void
     {
         while (!feof($this->socket)) {
             $buffer = (string) fgets($this->socket);
 
             foreach ($this->callbacks as $callback) {
-                $callbackReturn = $callback($buffer);
+                $callbackReturn = $callback($buffer, $request);
 
                 if (null !== $callbackReturn) {
                     $buffer = $callbackReturn;
