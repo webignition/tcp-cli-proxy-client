@@ -55,4 +55,24 @@ class ClientTest extends TestCase
             self::assertLessThan(0.4, $interval);
         }
     }
+
+    public function testRequestIsAvailableToHandlerCallback()
+    {
+        $passedRequest = null;
+
+        $handler = new Handler();
+        $handler = $handler->addCallback(function (string $buffer, string $request) use (&$passedRequest) {
+            if (null === $passedRequest) {
+                $passedRequest = $request;
+            }
+
+            return $buffer;
+        });
+
+        $request = 'ls ' . __FILE__;
+
+        $this->client->request($request, $handler);
+
+        self::assertSame($request, $passedRequest);
+    }
 }

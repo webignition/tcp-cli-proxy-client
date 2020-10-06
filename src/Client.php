@@ -49,7 +49,7 @@ class Client
         $this->errorHandler->start();
         fwrite($socket, $request . "\n");
 
-        $handler->handle();
+        $handler->handle($request);
 
         fclose($socket);
 
