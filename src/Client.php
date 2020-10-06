@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace webignition\TcpCliProxyClient;
 
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\StreamOutput;
 use webignition\ErrorHandler\ErrorHandler;
 use webignition\TcpCliProxyClient\Exception\ClientCreationException;
 use webignition\TcpCliProxyClient\Exception\SocketErrorException;
@@ -18,7 +16,6 @@ class Client
 
     private ErrorHandler $errorHandler;
     private SocketFactory $socketFactory;
-    private OutputInterface $output;
 
     public function __construct(string $connectionString)
     {
@@ -26,7 +23,6 @@ class Client
 
         $this->errorHandler = new ErrorHandler();
         $this->socketFactory = new SocketFactory($this->errorHandler);
-        $this->output = new StreamOutput(STDOUT);
     }
 
     public static function createFromHostAndPort(string $host, int $port): self
@@ -36,42 +32,25 @@ class Client
         );
     }
 
-    public function withOutput(OutputInterface $output): self
-    {
-        $new = clone $this;
-        $new->output = $output;
-
-        return $new;
-    }
-
     /**
      * @param string $request
-     * @param callable|null $filter
+     * @param Handler|null $handler
      *
      * @throws ClientCreationException
      * @throws SocketErrorException
      */
-    public function request(string $request, ?callable $filter = null): void
+    public function request(string $request, ?Handler $handler = null): void
     {
         $socket = $this->socketFactory->create($this->connectionString);
 
-        $filter = $filter ?? function (string $buffer) {
-            return $buffer;
-        };
+        $handler = $handler ?? new Handler();
+        $handler = $handler->withSocket($socket);
 
         $this->errorHandler->start();
         fwrite($socket, $request . "\n");
-        while (!feof($socket)) {
-            $buffer = (string) fgets($socket);
 
-            (function (string $buffer, callable $filter) {
-                $buffer = $filter($buffer);
+        $handler->handle();
 
-                if (is_string($buffer)) {
-                    $this->output->write($buffer);
-                }
-            })($buffer, $filter);
-        }
         fclose($socket);
 
         try {
