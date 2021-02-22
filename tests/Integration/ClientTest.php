@@ -22,7 +22,7 @@ class ClientTest extends TestCase
         $this->handlerFactory = new HandlerFactory();
     }
 
-    public function testRequest()
+    public function testRequest(): void
     {
         $output = '';
         $exitCode = null;
@@ -35,7 +35,7 @@ class ClientTest extends TestCase
         self::assertSame(__FILE__ . "\n\n", $output);
     }
 
-    public function testResponseIsWrittenAsReceived()
+    public function testResponseIsWrittenAsReceived(): void
     {
         $fixturePath = __DIR__ . '/fixture.sh';
         $now = microtime(true);
@@ -58,7 +58,7 @@ class ClientTest extends TestCase
         }
     }
 
-    public function testRequestIsAvailableToHandlerCallback()
+    public function testRequestIsAvailableToHandlerCallback(): void
     {
         $passedRequest = null;
 
