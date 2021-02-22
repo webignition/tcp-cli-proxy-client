@@ -16,7 +16,7 @@ class ClientTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
-    public function testRequestEncapsulatesErrorExceptionInSocketErrorException()
+    public function testRequestEncapsulatesErrorExceptionInSocketErrorException(): void
     {
         $errorException = new \ErrorException('error exception message');
 

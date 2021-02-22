@@ -32,7 +32,7 @@ class SocketFactoryTest extends TestCase
         $this->factory = new SocketFactory($this->createErrorHandler());
     }
 
-    public function testCreateSuccess()
+    public function testCreateSuccess(): void
     {
         /** @var resource $socket */
         $socket = \Mockery::mock();
@@ -53,7 +53,7 @@ class SocketFactoryTest extends TestCase
         self::assertSame($socket, $createdSocket);
     }
 
-    public function testCreateThrowsClientCreationException()
+    public function testCreateThrowsClientCreationException(): void
     {
         $socketErrorMessage = 'socket error message';
         $socketErrorNumber = 123;
@@ -93,7 +93,7 @@ class SocketFactoryTest extends TestCase
         }
     }
 
-    public function testCreateEncapsulatesErrorExceptionInSocketErrorException()
+    public function testCreateEncapsulatesErrorExceptionInSocketErrorException(): void
     {
         $errorException = new \ErrorException('error exception message');
 

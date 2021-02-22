@@ -22,23 +22,25 @@
         }
     },
     "scripts": {
+        "cs-ecs": "./vendor/bin/ecs check src tests --ansi --no-progress-bar --config ecs.php",
+        "cs-phpcs": "./vendor/bin/phpcs",
         "cs": [
-            "./vendor/bin/ecs check src tests --ansi --config ecs.yaml",
-            "./vendor/bin/phpcs"
+            "@cs-ecs",
+            "@cs-phpcs"
         ],
         "cs-fix": [
-            "./vendor/bin/ecs check src tests --ansi --config ecs.yaml --fix"
+            "./vendor/bin/ecs check src tests --ansi --config ecs.php --fix"
         ],
-        "static-analysis": "./vendor/bin/phpstan analyse --ansi",
+        "static-analysis": "./vendor/bin/phpstan analyse",
         "test": "./vendor/bin/phpunit --colors=always",
         "ci": [
-            "@cs",
-            "@static-analysis",
-            "@test"
+            "@composer cs",
+            "@composer static-analysis",
+            "@composer test"
         ],
         "server-fetch": [
             "rm -f server.phar",
-            "curl -L https://github.com/webignition/tcp-cli-proxy-server/releases/download/0.5/server.phar --output server.phar",
+            "curl -L https://github.com/webignition/tcp-cli-proxy-server/releases/download/0.7/server.phar --output server.phar",
             "chmod +x server.phar"
         ],
         "client-test": [
@@ -46,20 +48,20 @@
         ]
     },
     "require": {
-        "php": ">=7.4",
-        "webignition/error-handler": "^0.1.0"
+        "php": ">=7.4|^8",
+        "webignition/error-handler": "^0.2.0"
     },
     "require-dev": {
         "mockery/mockery": "^1.4",
-        "php-mock/php-mock": "^2.2",
+        "php-mock/php-mock": "^2.3",
         "php-mock/php-mock-mockery": "^1.3",
-        "phpstan/extension-installer": "^1.0",
-        "phpstan/phpstan": "^0.12.0",
-        "phpstan/phpstan-mockery": "^0.12.7",
-        "phpunit/phpunit": "^9.2",
-        "squizlabs/php_codesniffer": "3.*",
-        "symplify/easy-coding-standard": "^8.0",
-        "webignition/object-reflector": "^0.2.0"
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan": "^0.12.78",
+        "phpstan/phpstan-mockery": "^0.12.12",
+        "phpunit/phpunit": "^9.5",
+        "squizlabs/php_codesniffer": "^3.5",
+        "symplify/easy-coding-standard": "^9.2",
+        "webignition/object-reflector": "^1.0"
     },
     "config": {
         "sort-packages": true
