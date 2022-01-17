@@ -39,7 +39,8 @@ class SocketFactoryTest extends TestCase
 
         PHPMockery::mock('webignition\TcpCliProxyClient\Services', 'is_resource')
             ->with($socket)
-            ->andReturnTrue();
+            ->andReturnTrue()
+        ;
 
         PHPMockery::mock('webignition\TcpCliProxyClient\Services', 'stream_socket_client')
             ->withArgs(function (string $connectionString, $errorNumber, $errorMessage) {
@@ -47,7 +48,8 @@ class SocketFactoryTest extends TestCase
 
                 return true;
             })
-            ->andReturn($socket);
+            ->andReturn($socket)
+        ;
 
         $createdSocket = $this->factory->create($this->connectionString);
         self::assertSame($socket, $createdSocket);
@@ -74,7 +76,8 @@ class SocketFactoryTest extends TestCase
 
                 return true;
             })
-            ->andReturn(false);
+            ->andReturn(false)
+        ;
 
         try {
             $this->factory->create($this->connectionString);
@@ -99,11 +102,13 @@ class SocketFactoryTest extends TestCase
 
         $errorHandler = \Mockery::mock(ErrorHandler::class);
         $errorHandler
-            ->shouldReceive('start');
+            ->shouldReceive('start')
+        ;
 
         $errorHandler
             ->shouldReceive('stop')
-            ->andThrow($errorException);
+            ->andThrow($errorException)
+        ;
 
         PHPMockery::mock('webignition\TcpCliProxyClient\Services', 'stream_socket_client');
 
@@ -118,16 +123,17 @@ class SocketFactoryTest extends TestCase
     {
         $errorHandler = \Mockery::mock(ErrorHandler::class);
         $errorHandler
-            ->shouldReceive('start');
+            ->shouldReceive('start')
+        ;
 
         $errorHandler
-            ->shouldReceive('stop');
+            ->shouldReceive('stop')
+        ;
 
         return $errorHandler;
     }
 
     /**
-     * @param string $connectionString
      * @param null $errorNumber
      * @param null $errorMessage
      */

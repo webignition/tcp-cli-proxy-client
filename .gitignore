@@ -1,3 +1,4 @@
+/build/
 /vendor/
 .phpunit.result.cache
-server.phar
+.php-cs-fixer.cache

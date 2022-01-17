@@ -45,7 +45,8 @@ class ClientTest extends TestCase
             ->addCallback(function () use (&$writeIntervals, &$now) {
                 $writeIntervals[] = microtime(true) - $now;
                 $now = microtime(true);
-            });
+            })
+        ;
 
         $this->client->request($fixturePath);
         $this->client->request($fixturePath, $handler);
