@@ -22,18 +22,22 @@ class ClientTest extends TestCase
 
         $errorHandler = \Mockery::mock(ErrorHandler::class);
         $errorHandler
-            ->shouldReceive('start');
+            ->shouldReceive('start')
+        ;
 
         $errorHandler
             ->shouldReceive('stop')
-            ->andThrow($errorException);
+            ->andThrow($errorException)
+        ;
 
         PHPMockery::mock('webignition\TcpCliProxyClient\Services', 'stream_socket_client');
         PHPMockery::mock('webignition\TcpCliProxyClient\Services', 'is_resource')
-            ->andReturnTrue();
+            ->andReturnTrue()
+        ;
         PHPMockery::mock('webignition\TcpCliProxyClient', 'fwrite');
         PHPMockery::mock('webignition\TcpCliProxyClient', 'feof')
-            ->andReturnTrue();
+            ->andReturnTrue()
+        ;
         PHPMockery::mock('webignition\TcpCliProxyClient', 'fgets');
         PHPMockery::mock('webignition\TcpCliProxyClient', 'fclose');
 

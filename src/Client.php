@@ -33,9 +33,6 @@ class Client
     }
 
     /**
-     * @param string $request
-     * @param Handler|null $handler
-     *
      * @throws ClientCreationException
      * @throws SocketErrorException
      */
