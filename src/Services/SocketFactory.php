@@ -10,8 +10,8 @@ use webignition\TcpCliProxyClient\Exception\SocketErrorException;
 
 class SocketFactory
 {
-    private ?int $errorNumber;
-    private ?string $errorMessage;
+    private ?int $errorNumber = null;
+    private ?string $errorMessage = null;
     private ErrorHandler $errorHandler;
 
     public function __construct(ErrorHandler $errorHandler)
