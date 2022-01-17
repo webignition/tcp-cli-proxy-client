@@ -46,8 +46,8 @@
         ]
     },
     "require": {
-        "php": ">=7.4|^8",
-        "webignition/error-handler": "^0.2.0"
+        "php": "^8.0",
+        "webignition/error-handler": "^0.3.0"
     },
     "require-dev": {
         "mockery/mockery": "^1.4",
