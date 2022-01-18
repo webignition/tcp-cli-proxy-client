@@ -53,6 +53,8 @@ jobs:
           php_version: ${{ matrix.php }}
 
       - name: Run integration tests
+        env:
+          PHP_VERSION: ${{ matrix.php }}
         run: |
           composer server-fetch
           ./server.phar &
