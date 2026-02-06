@@ -46,7 +46,7 @@
         ]
     },
     "require": {
-        "php": "^8.0|^8.1",
+        "php": "^8.4",
         "webignition/error-handler": "^0.3.0"
     },
     "require-dev": {
