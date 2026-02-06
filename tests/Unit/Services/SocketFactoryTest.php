@@ -27,7 +27,7 @@ class SocketFactoryTest extends TestCase
 
         $host = 'localhost';
         $port = 8000;
-        $this->connectionString = (new ConnectionStringFactory())->createFromHostAndPort($host, $port);
+        $this->connectionString = new ConnectionStringFactory()->createFromHostAndPort($host, $port);
 
         $this->factory = new SocketFactory($this->createErrorHandler());
     }
@@ -43,7 +43,7 @@ class SocketFactoryTest extends TestCase
         ;
 
         PHPMockery::mock('webignition\TcpCliProxyClient\Services', 'stream_socket_client')
-            ->withArgs(function (string $connectionString, $errorNumber, $errorMessage) {
+            ->withArgs(function (string $connectionString, mixed $errorNumber, mixed $errorMessage) {
                 $this->assertStreamSocketClientArguments($connectionString, $errorNumber, $errorMessage);
 
                 return true;
@@ -133,12 +133,11 @@ class SocketFactoryTest extends TestCase
         return $errorHandler;
     }
 
-    /**
-     * @param null $errorNumber
-     * @param null $errorMessage
-     */
-    private function assertStreamSocketClientArguments(string $connectionString, $errorNumber, $errorMessage): void
-    {
+    private function assertStreamSocketClientArguments(
+        string $connectionString,
+        mixed $errorNumber,
+        mixed $errorMessage
+    ): void {
         self::assertSame($this->connectionString, $connectionString);
         self::assertNull($errorNumber);
         self::assertNull($errorMessage);
