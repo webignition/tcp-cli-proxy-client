@@ -38,7 +38,7 @@
         ],
         "server-fetch": [
             "rm -f server.phar",
-            "curl -L https://github.com/webignition/tcp-cli-proxy-server/releases/download/0.8/server-$PHP_VERSION.phar --output server.phar",
+            "curl -L https://github.com/webignition/tcp-cli-proxy-server/releases/download/1.0/server-$PHP_VERSION.phar --output server.phar",
             "chmod +x server.phar"
         ],
         "client-test": [
@@ -46,7 +46,7 @@
         ]
     },
     "require": {
-        "php": "^8.0|^8.1",
+        "php": "^8.4",
         "webignition/error-handler": "^0.3.0"
     },
     "require-dev": {
