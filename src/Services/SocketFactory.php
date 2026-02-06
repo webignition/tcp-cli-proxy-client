@@ -20,10 +20,10 @@ class SocketFactory
     }
 
     /**
+     * @return resource
+     *
      * @throws ClientCreationException
      * @throws SocketErrorException
-     *
-     * @return resource
      */
     public function create(string $connectionString)
     {
