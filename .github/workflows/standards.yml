@@ -8,12 +8,25 @@ on:
 
 jobs:
   php-cs-fixer:
-    name: PHP CS Fixer Dry Run
+    name: PHP CS Fixer Dry Run - PHP ${{ matrix.php }}
+    strategy:
+      matrix:
+        php: ['8.4', '8.5']
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+
+      - name: Setup php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+
+      - name: Download dependencies
+        uses: php-actions/composer@v6
+        with:
+          php_version: ${{ matrix.php }}
 
       - name: Run
         env:
