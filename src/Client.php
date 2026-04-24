@@ -36,11 +36,9 @@ class Client
      * @throws ClientCreationException
      * @throws SocketErrorException
      */
-    public function request(string $request, ?Handler $handler = null): void
+    public function request(string $request, Handler $handler): void
     {
         $socket = $this->socketFactory->create($this->connectionString);
-
-        $handler = $handler ?? new Handler();
         $handler = $handler->withSocket($socket);
 
         $this->errorHandler->start();
