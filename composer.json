@@ -58,7 +58,7 @@
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-mockery": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
-        "phpunit/phpunit": "^12",
+        "phpunit/phpunit": "^13",
         "squizlabs/php_codesniffer": "^4.0",
         "webignition/object-reflector": "^1.0"
     },
