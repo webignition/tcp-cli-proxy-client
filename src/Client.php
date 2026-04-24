@@ -7,6 +7,8 @@ namespace webignition\TcpCliProxyClient;
 use webignition\ErrorHandler\ErrorHandler;
 use webignition\TcpCliProxyClient\Exception\ClientCreationException;
 use webignition\TcpCliProxyClient\Exception\SocketErrorException;
+use webignition\TcpCliProxyClient\Exception\SocketTimedOutException;
+use webignition\TcpCliProxyClient\Exception\TimeoutException;
 use webignition\TcpCliProxyClient\Services\ConnectionStringFactory;
 use webignition\TcpCliProxyClient\Services\SocketFactory;
 
@@ -35,16 +37,28 @@ class Client
     /**
      * @throws ClientCreationException
      * @throws SocketErrorException
+     * @throws SocketTimedOutException
+     * @throws \ErrorException
      */
-    public function request(string $request, Handler $handler): void
+    public function request(string $request, Handler $handler, ?int $timeoutInSeconds = null): void
     {
         $socket = $this->socketFactory->create($this->connectionString);
+        if (is_int($timeoutInSeconds)) {
+            stream_set_timeout($socket, $timeoutInSeconds);
+        }
+
         $handler = $handler->withSocket($socket);
 
         $this->errorHandler->start();
         fwrite($socket, $request . "\n");
 
-        $handler->handle($request);
+        try {
+            $handler->handle($request);
+        } catch (TimeoutException) {
+            $this->errorHandler->stop();
+
+            throw new SocketTimedOutException((int) $timeoutInSeconds);
+        }
 
         fclose($socket);
 
