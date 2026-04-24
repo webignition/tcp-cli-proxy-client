@@ -48,7 +48,6 @@ class ClientTest extends TestCase
             })
         ;
 
-        $this->client->request($fixturePath);
         $this->client->request($fixturePath, $handler);
 
         $echoWriteIntervals = array_slice($writeIntervals, 0, 2);

@@ -11,6 +11,7 @@ use webignition\ErrorHandler\ErrorHandler;
 use webignition\ObjectReflector\ObjectReflector;
 use webignition\TcpCliProxyClient\Client;
 use webignition\TcpCliProxyClient\Exception\SocketErrorException;
+use webignition\TcpCliProxyClient\Handler;
 
 class ClientTest extends TestCase
 {
@@ -46,6 +47,6 @@ class ClientTest extends TestCase
 
         $this->expectExceptionObject(new SocketErrorException($errorException));
 
-        $client->request('request content');
+        $client->request('request content', new Handler());
     }
 }
