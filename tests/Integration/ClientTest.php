@@ -6,6 +6,7 @@ namespace webignition\TcpCliProxyClient\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
 use webignition\TcpCliProxyClient\Client;
+use webignition\TcpCliProxyClient\Exception\SocketTimedOutException;
 use webignition\TcpCliProxyClient\Handler;
 use webignition\TcpCliProxyClient\HandlerFactory;
 
@@ -76,5 +77,21 @@ class ClientTest extends TestCase
         $this->client->request($request, $handler);
 
         self::assertSame($request, $passedRequest);
+    }
+
+    public function testTimeout(): void
+    {
+        $fixturePath = __DIR__ . '/timeout.sh';
+        $timeout = 1;
+
+        $exception = null;
+
+        try {
+            $this->client->request($fixturePath, new Handler(), $timeout);
+        } catch (SocketTimedOutException $exception) {
+        }
+
+        self::assertInstanceOf(SocketTimedOutException::class, $exception);
+        self::assertSame($timeout, $exception->timeoutInSeconds);
     }
 }

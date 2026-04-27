@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace webignition\TcpCliProxyClient;
 
+use webignition\TcpCliProxyClient\Exception\TimeoutException;
+
 class Handler
 {
     /**
@@ -16,9 +18,17 @@ class Handler
      */
     private array $callbacks = [];
 
+    /**
+     * @throws TimeoutException
+     */
     public function handle(string $request): void
     {
         while (!feof($this->socket)) {
+            $streamMetadata = stream_get_meta_data($this->socket);
+            if (true === $streamMetadata['timed_out']) {
+                throw new TimeoutException();
+            }
+
             $buffer = (string) fgets($this->socket);
 
             foreach ($this->callbacks as $callback) {
